@@ -1,5 +1,6 @@
 import pygame
-from Fireball import fireball
+import boss
+from sword import throw_sword
 pygame.init()  
 pygame.display.set_caption("Zelda Game")  # sets the window title
 screen = pygame.display.set_mode((850, 900))  # creates game screen
@@ -14,7 +15,9 @@ UP = 2
 DOWN = 3
 SHOOT = 4
 
-ball = fireball()
+sword = throw_sword()
+boss_patra = boss.patra(250, 250)
+
 
 #MAP: 1 is grass, 2 is brick
 map = [[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2, 2,2],
@@ -36,13 +39,13 @@ map = [[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2, 2,2],
        [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
        [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2, 2,2]]
 
+#Link = pygame.image.load('link.png') #load your spritesheet
 metal = pygame.image.load('./metal.png') #load your spritesheet
 brick = pygame.image.load('./brick.png')
-#Link = pygame.image.load('link.png') #load your spritesheet
 PotatoPic = pygame.image.load("./potato1.jpg")
 #Link.set_colorkey((255, 0, 255)) #this makes bright pink (255, 0, 255) transparent (sort of)
 
-#player variables
+#start of player variables --------------------#
 xpos = 400 #xpos of player
 ypos = 400 #ypos of player
 vx = 0 #x velocity of player
@@ -54,16 +57,24 @@ isOnGround = False #this variable stops gravity from pulling you down more when 
 movingx = False
 movingy = False
 potato = True
-#animation variables variables
+#           animation variables variables
 frameWidth = 32
 frameHeight = 46
 RowNum = 0 #for left animation, this will need to change for other animations
 frameNum = 0
 ticker = 0
 direction = DOWN
+#end of player variables ---------------------#
+
+#start of patra variables --------------------#
+fire = [boss.fireball(boss_patra),boss.fireball(boss_patra,1/4),boss.fireball(boss_patra, 1/2),boss.fireball(boss_patra,3/4),boss.fireball(boss_patra,1/8),boss.fireball(boss_patra,3/8),boss.fireball(boss_patra, 5/8),boss.fireball(boss_patra,7/8)]
+
+
+
 
 while not gameover:
     clock.tick(60) #FPS
+    
    
     for event in pygame.event.get(): #quit game if x is pressed in top corner
         if event.type == pygame.QUIT:
@@ -92,7 +103,6 @@ while not gameover:
             elif event.key == pygame.K_SPACE:
                 keys[SHOOT] = False
          
-
     #LEFT MOVEMENT
     if keys[LEFT] == True:
         if xpos > 400:
@@ -105,7 +115,6 @@ while not gameover:
         RowNum = 0
         direction = LEFT
         movingx = True
-       
     #RIGHT MOVEMENT
     elif keys[RIGHT] == True:
         if xpos < 400:
@@ -118,18 +127,9 @@ while not gameover:
         RowNum = 1
         direction = RIGHT
         movingx = True
-    #turn off velocity
     else:
         vx = 0
         movingx = False
-
-    #check space for shooting
-    if keys[SHOOT] == True:
-        ball.shoot(xpos, ypos, direction)
-       
-    ball.move()
-
-       
     #DOWN MOVEMENT
     if keys[DOWN] == True:
         if ypos < 400:
@@ -143,8 +143,7 @@ while not gameover:
         RowNum = 3
         direction = DOWN
         movingy = True
-
-         #UP MOVEMENT
+    #UP MOVEMENT
     elif keys[UP] == True:
         if ypos > 400:
             vy = -3
@@ -157,19 +156,23 @@ while not gameover:
         RowNum = 2
         direction = UP
         movingy = True
-    #turn off velocity
     else:
         vy = 0
         movingy = False
-       
 
+
+    #check space for shooting
+    if keys[SHOOT] == True:
+        sword.shoot(xpos, ypos, direction)
+
+    sword.move()
 
 
     xpos+=vx #update player xpos
     ypos+=vy
 
    
-    #COLLISION
+    #START PLAYER TO WALL COLLISION---------------------------------------------------------#
    
     #down collision
     if map[int((ypos - y_offset + frameHeight - 5) / 50)][int((xpos - x_offset + frameWidth / 2) / 51)] == 2:
@@ -192,23 +195,20 @@ while not gameover:
         xpos-=3
     if xpos + frameHeight < 0:
         xpos+=3
-
-    #potato collision!
-
+    #END PLAYER TO WALL COLLISION---------------------------------------------------------#
 
 
-    #ANIMATION-------------------------------------------------------------------
-       
+    #START OF ANIMATION-------------------------------------------------------------------#
     # Update Animation Information
-
     if movingx == True or movingy == True: #animate when moving
         ticker+=1
         if ticker % 10 == 0: #only change frames every 10 ticks
           frameNum+=1
         if frameNum > 7:
            frameNum = 0
- 
-    # RENDER------------------------------------------------------------------------------       
+    #END OF ANIMATION-----------------------------------------------------------------#
+
+    #START OF RENDER------------------------------------------------------------------#       
     screen.fill((0,0,0)) #wipe screen so it doesn't smear
    
     #draw map
@@ -220,13 +220,14 @@ while not gameover:
                 screen.blit(metal, (j * 50 + x_offset, i * 50 + y_offset), (0, 0, 50, 50))
    
     #draw fireball
-    if ball.isAlive == True:
-        ball.draw(screen)
+    if sword.isAlive == True:
+        sword.draw(screen)
     #draw player
     pygame.draw.rect(screen, (255, 255, 255), (xpos, ypos, 20, 40))
-
     pygame.display.flip()#this actually puts the pixel on the screen
-   
+    #END OF RENDER--------------------------------------------------------------------#
+
+
 #end game
 #loop------------------------------------------------------------------------------
 pygame.quit()
