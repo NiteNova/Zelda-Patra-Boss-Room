@@ -67,7 +67,7 @@ direction = DOWN
 #end of player variables ---------------------#
 
 #start of patra variables --------------------#
-fire = [boss.fireball(boss_patra),boss.fireball(boss_patra,1/4),boss.fireball(boss_patra, 1/2),boss.fireball(boss_patra,3/4),boss.fireball(boss_patra,1/8),boss.fireball(boss_patra,3/8),boss.fireball(boss_patra, 5/8),boss.fireball(boss_patra,7/8)]
+fire = [boss.fireball(boss_patra),boss.fireball(boss_patra, 1/4),boss.fireball(boss_patra,1/2),boss.fireball(boss_patra,3/4),boss.fireball(boss_patra,1/8),boss.fireball(boss_patra,3/8),boss.fireball(boss_patra, 5/8),boss.fireball(boss_patra,7/8)]
 
 
 

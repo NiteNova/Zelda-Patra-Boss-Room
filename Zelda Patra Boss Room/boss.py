@@ -31,8 +31,8 @@ class patra:
 
 #FIREBALL CLASS! THE SPINNY THING!
 
-class patra_fireball:
-    def __init__(self, following, off = 0):
+class fireball:
+    def __init__(self, following, off: float = 0):
         self.x = following.x
         self.y = following.y
         self.angle = off
