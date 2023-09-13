@@ -2,7 +2,7 @@ import pygame
 from Fireball import fireball
 pygame.init()  
 pygame.display.set_caption("Zelda Game")  # sets the window title
-screen = pygame.display.set_mode((832, 800))  # creates game screen
+screen = pygame.display.set_mode((850, 900))  # creates game screen
 screen.fill((0,0,0))
 clock = pygame.time.Clock() #set up clock
 gameover = False #variable to run our game loop
@@ -110,7 +110,7 @@ while not gameover:
     elif keys[RIGHT] == True:
         if xpos < 400:
             vx = 3
-        elif x_offset > -800:
+        elif x_offset > 800:
             x_offset-=3
             vx = 0
         else:
@@ -134,7 +134,7 @@ while not gameover:
     if keys[DOWN] == True:
         if ypos < 400:
             vy = 3
-        elif y_offset > -800:
+        elif y_offset > 800:
             y_offset-=3
             vy = 0
         else:
@@ -172,7 +172,7 @@ while not gameover:
     #COLLISION
    
     #down collision
-    if map[int((ypos - y_offset + frameHeight) / 50)][int((xpos - x_offset + frameWidth / 2) / 50)] == 2:
+    if map[int((ypos - y_offset + frameHeight - 5) / 50)][int((xpos - x_offset + frameWidth / 2) / 51)] == 2:
         ypos-=3
    
     #up collision
@@ -180,11 +180,11 @@ while not gameover:
         ypos+=3
        
     #left collision
-    if map[int((ypos - y_offset + frameHeight - 10) / 50)][int((xpos - x_offset - 10) / 50)] == 2 :
+    if map[int((ypos - y_offset + frameHeight - 10) / 50)][int((xpos - x_offset - 5) / 50)] == 2 :
         xpos+=3
        
     #right collision
-    if map[int((ypos - y_offset) / 50)][int((xpos - x_offset + frameWidth + 5) / 50)] == 2:
+    if map[int((ypos - y_offset) / 50)][int((xpos - x_offset + frameWidth + 5) / 51)] == 2:
         xpos-=3    
 
     #stop moving if you hit edge of screen (will be removed for scrolling)
