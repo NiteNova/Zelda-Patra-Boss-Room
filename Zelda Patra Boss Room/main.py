@@ -36,10 +36,10 @@ map = [[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2, 2,2],
        [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,0, 0,2],
        [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2, 2,2]]
 
-metal = pygame.image.load('C:/Users/768588/Downloads/metal.png') #load your spritesheet
-brick = pygame.image.load('C:/Users/768588/Downloads/brick.png')
+metal = pygame.image.load('./metal.png') #load your spritesheet
+brick = pygame.image.load('./brick.png')
 #Link = pygame.image.load('link.png') #load your spritesheet
-PotatoPic = pygame.image.load("C:/Users/768588/Downloads/potato1.jpg")
+PotatoPic = pygame.image.load("./potato1.jpg")
 #Link.set_colorkey((255, 0, 255)) #this makes bright pink (255, 0, 255) transparent (sort of)
 
 #player variables
