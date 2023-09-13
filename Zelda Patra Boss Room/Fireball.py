@@ -35,7 +35,5 @@ class fireball:
         if math.sqrt((self.xpos - x) ** 2 + (self.ypos - y) ** 2) < 25: #25 is radius of fireball + radius of potato
             print("collision!")
             return True
-        
-            return True
         else:
             return False
