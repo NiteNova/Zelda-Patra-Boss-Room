@@ -18,6 +18,44 @@ class patra:
         if self.turntime < 1:
             self.direction = random.randint(1,8)
             self.turntime = random.randint(30,300)
+        
+        #Makes sure this doesn't drift off-screen
+        
+        if self.x > 200:
+            if self.y < 0:
+                self.direction = 6
+            elif self.y > 200:
+                self.direction = 4
+            else:
+                self.direction = 5
+            self.turntime = random.randint(150,450)
+        elif self.y > 200:
+            if self.x < 0:
+                self.direction = 8
+            elif self.x > 200:
+                self.direction = 6
+            else:
+                self.direction = 7
+            self.turntime = random.randint(150,450)
+        elif self.x < 0:
+            if self.y < 0:
+                self.direction = 2
+            elif self.y > 200:
+                self.direction = 8
+            else:
+                self.direction = 1
+            self.turntime = random.randint(150,450)
+        elif self.y < 0:
+            if self.x < 0:
+                self.direction = 4
+            elif self.x > 200:
+                self.direction = 2
+            else:
+                self.direction = 3
+            self.turntime = random.randint(150,450)
+        
+        #What actually moves 
+        
         if self.direction == 8 or self.direction == 1 or self.direction == 2:
             self.x += speed/2
         if self.direction == 2 or self.direction == 3 or self.direction == 4:

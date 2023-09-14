@@ -6,7 +6,7 @@ RIGHT = 1
 UP = 2
 DOWN = 3
 SHOOT = 4
-
+#Hi
 class throw_sword:
     def __init__(self):
         self.xpos = -10 #draw offscreen when not in use
