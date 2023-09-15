@@ -170,11 +170,11 @@ while not gameover:
     
 
     #check space for shooting
-    if keys[SHOOT] == True:
+    if keys[SHOOT] == True and sword.isAlive == False:
         sword.shoot(xpos, ypos, direction)
-
     sword.move()
-
+    if sword.xpos <= 0 or sword.xpos >= 860 or sword.ypos <= 0 or sword.ypos >= 900:
+        sword.kill()
 
     xpos+=vx #update player xpos
     ypos+=vy
@@ -372,7 +372,7 @@ while not gameover:
             else:
                 fire[i].sy = 75
             fire[i].step(boss_patra)
-
+    #END OF FIREBALL STYLE--------------------------------------------------------#
 
 
     #START OF ANIMATION-------------------------------------------------------------------#

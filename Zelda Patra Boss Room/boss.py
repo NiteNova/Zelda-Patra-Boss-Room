@@ -2,8 +2,8 @@ import pygame
 import random
 import math
 
-tea = pygame.image.load('boss_img.png')
-fire = pygame.image.load('fire.png')
+tea = pygame.image.load("boss_img.png")
+fire = pygame.image.load("fire.png")
 class patra:
     def __init__(self,sx,sy):
         self.x = sx

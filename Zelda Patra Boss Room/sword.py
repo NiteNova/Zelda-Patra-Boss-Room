@@ -20,13 +20,13 @@ class throw_sword:
         self.direction = dir
     def move(self):
         if self.direction == RIGHT:
-            self.xpos+=20
+            self.xpos+=10
         elif self.direction == LEFT:
-            self.xpos-=20
+            self.xpos-=10
         elif self.direction == UP:
-            self.ypos-=20
+            self.ypos-=10
         elif self.direction == DOWN:
-            self.ypos+=20
+            self.ypos+=10
         #add other directions here
     def draw(self, screen):
         pygame.draw.circle(screen, (250, 0, 0), (self.xpos, self.ypos), 10)
@@ -37,3 +37,6 @@ class throw_sword:
             return True
         else:
             return False
+    def kill(self):
+        self.isAlive = False    
+    
