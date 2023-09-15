@@ -1,5 +1,6 @@
 import pygame
 import boss
+import random
 from sword import throw_sword
 pygame.init()  
 pygame.display.set_caption("Zelda Game")  # sets the window title
@@ -16,38 +17,37 @@ DOWN = 3
 SHOOT = 4
 
 sword = throw_sword()
-boss_patra = boss.patra(250, 250)
-
+boss_patra = boss.patra(425, 450)
+bossalive = True
 
 #MAP: 1 is grass, 2 is brick
-map = [[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2, 2,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2, 0,2],
-       [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2, 2,2]]
+map = [[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
+       [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2]]
 
 #Link = pygame.image.load('link.png') #load your spritesheet
 metal = pygame.image.load('./metal.png') #load your spritesheet
 brick = pygame.image.load('./brick.png')
-PotatoPic = pygame.image.load("./potato1.jpg")
 #Link.set_colorkey((255, 0, 255)) #this makes bright pink (255, 0, 255) transparent (sort of)
 
 #start of player variables --------------------#
-xpos = 400 #xpos of player
-ypos = 400 #ypos of player
+xpos = 200 #xpos of player
+ypos = 200 #ypos of player
 vx = 0 #x velocity of player
 vy = 0 #y velocity of player
 x_offset = 0
@@ -73,10 +73,10 @@ for i in range(balls):
     j = i/balls-1/balls
     fire.append(boss.fireball(boss_patra,j))
 firetimer = 0
-style = 3
+style = 16
 stylevarA = 1
 stylevarB = 0
-
+stylevarC = 0
 
 
 while not gameover:
@@ -171,13 +171,15 @@ while not gameover:
 
     #check space for shooting
     if keys[SHOOT] == True and sword.isAlive == False:
+        
         sword.shoot(xpos, ypos, direction)
     sword.move()
-    if sword.xpos <= 0 or sword.xpos >= 860 or sword.ypos <= 0 or sword.ypos >= 900:
+
+    if sword.xpos <= 50 or sword.xpos >= 800 or sword.ypos <= 50 or sword.ypos >= 850:
         sword.kill()
 
     xpos+=vx #update player xpos
-    ypos+=vy
+    ypos+=vy #update player ypos
 
    
     #START PLAYER TO WALL COLLISION---------------------------------------------------------#
@@ -199,40 +201,50 @@ while not gameover:
         xpos-=3    
 
     #stop moving if you hit edge of screen (will be removed for scrolling)
-    if xpos + frameWidth > 800:
+    if xpos + frameWidth > 850:
         xpos-=3
     if xpos + frameHeight < 0:
         xpos+=3
     #END PLAYER TO WALL COLLISION---------------------------------------------------------#
 
-    #START OF FIREBALL STYLE------------------------------------------------------#
+    #START OF BOSS MOVEMENT
+
+    if boss_patra.hp <= 0 and bossalive:
+        bossalive = False
+        style = 13
+    
+    if style != 16:
+        boss_patra.step()
+
+    #START OF FIREBALL MOVEMENT------------------------------------------------------#
     for i in range(len(fire)):
+        
         if style == 0: # Style 0: do nothing, become normal
             stylevarA = 0
             stylevarB = 0
             fire[i].tx = 0
             fire[i].ty = 0
-            fire[i].sx = 100
-            fire[i].sy = 100
+            fire[i].sx = 200
+            fire[i].sy = 200
             fire[i].step(boss_patra)
         elif style == 1: # Style 1: do the cool swaying
             fire[i].tx = firetimer/2
             if stylevarA == 1:
                 fire[i].sy -= 1
-                if fire[i].sy <= -100:
+                if fire[i].sy <= -200:
                     stylevarA = 2
             elif stylevarA == 2:
                 fire[i].sy += 1
-                if fire[i].sy >= 100:
+                if fire[i].sy >= 200:
                     stylevarA = 0
                     stylevarB = 1
             if stylevarB == 1:
                 fire[i].sx -= 1
-                if fire[i].sx <= -100:
+                if fire[i].sx <= -200:
                     stylevarB = 2
             elif stylevarB == 2:
                 fire[i].sx += 1
-                if fire[i].sx >= 100:
+                if fire[i].sx >= 200:
                     stylevarA = 1
                     stylevarB = 0
             fire[i].step(boss_patra)
@@ -316,7 +328,7 @@ while not gameover:
                         fire[i].sx -= 1
                     else:
                         fire[i].sx += 1
-                        if fire[i].sx <= -100:
+                        if fire[i].sx <= -200:
                             stylevarA = 2
                 elif stylevarA == 2:
                     if i % 2 == 1:
@@ -340,7 +352,7 @@ while not gameover:
                         
                     else:
                         fire[i].sy += 1
-                        if fire[i].sy >= 100:
+                        if fire[i].sy >= 200:
                             stylevarA = 2
                 elif stylevarA == 2:
                     if i % 2 == 1:
@@ -348,7 +360,7 @@ while not gameover:
                         
                     else:
                         fire[i].sy -= 1
-                        if fire[i].sy <= -100:
+                        if fire[i].sy <= -200:
                             stylevarA = 1
         elif style == 11: # Style 11: In and Out
             if fire[i].sx > 0:
@@ -357,33 +369,59 @@ while not gameover:
                 stylevarB += 0.01
             fire[i].sx += stylevarB
             fire[i].sy += stylevarB
-            if fire[i].sx > 150:
-                fire[i].sx = 150
-                fire[i].sy = 150
+            if fire[i].sx > 250:
+                fire[i].sx = 250
+                fire[i].sy = 250
                 stylevarB = 0
-            elif fire[i].sx < -150:
-                fire[i].sx = -150
-                fire[i].sy = -150
+            elif fire[i].sx < -250:
+                fire[i].sx = -250
+                fire[i].sy = -250
                 stylevarB = 0
             fire[i].step(boss_patra)
         elif style == 12: # Style 12: E G G
             if fire[i].y < boss_patra.y:
-                fire[i].sy = 150
+                fire[i].sy = 250
             else:
-                fire[i].sy = 75
+                fire[i].sy = 175
             fire[i].step(boss_patra)
-    #END OF FIREBALL STYLE--------------------------------------------------------#
+        elif style == 13: # Style 13: Crumbling
+            if fire[i].am < 0:
+                fire[i].am += 0.01
+            else:
+                fire[i].am -= 0.01
+            fire[i].sx += random.randint(-3,1)
+            fire[i].sy += random.randint(-3,1)
+            fire[i].step(boss_patra)
+            if fire[i].am < 0.1 and fire[i].am > -0.1:
+                style = 14
+        elif style == 14: # Style 14: Blowing up
+            fire[i].sx += 5
+            fire[i].sy += 5
+            if abs(fire[i].x+500) > 700 or abs(fire[i].y+500) > 700:
+                fire[i].alive = False
+            fire[i].step(boss_patra)
+        elif style == 15: # Style 15: Pengilum or whatever it is
+            fire[i].am = 0
+            fire[i].what = firetimer
+            fire[i].step(boss_patra)
+        elif style == 16: # Style 16: Preparing!
+            if firetimer >= 0 and stylevarA == 1:
+                firetimer = 0
+                stylevarA = 0
+            fire[i].am = 0
+            fire[i].what = firetimer
+            fire[i].step(boss_patra)
+            if firetimer >= 20:
+                for j in range(len(fire)):
+                    fire[j].am = 2
+                    fire[j].what = 20
+                style = 1
+                firetimer = 0
+                stylevarA = 1
+    #END OF FIREBALL MOVEMENT--------------------------------------------------------#
 
 
     #START OF ANIMATION-------------------------------------------------------------------#
-    # Update Animation Information
-    if movingx == True or movingy == True: #animate when moving
-        ticker+=1
-        if ticker % 10 == 0: #only change frames every 10 ticks
-          frameNum+=1
-        if frameNum > 7:
-           frameNum = 0
-    #END OF ANIMATION-----------------------------------------------------------------#
 
     #START OF RENDER------------------------------------------------------------------#       
     screen.fill((0,0,0)) #wipe screen so it doesn't smear
@@ -395,7 +433,6 @@ while not gameover:
                 screen.blit(brick, (j * 50 + x_offset, i * 50 + y_offset), (0, 0, 50, 50))
             if map[i][j] == 2:
                 screen.blit(metal, (j * 50 + x_offset, i * 50 + y_offset), (0, 0, 50, 50))
-   
     #draw fireball
     if sword.isAlive == True:
         sword.draw(screen)
