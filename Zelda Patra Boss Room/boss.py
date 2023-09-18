@@ -76,7 +76,7 @@ class patra:
 #FIREBALL CLASS! THE SPINNY THING!
 
 class fireball:
-    def __init__(self, following, off: float = 0):
+    def __init__(self, following, rad, off: float = 0):
         self.x = following.x
         self.y = following.y
         self.angle = off
@@ -84,11 +84,11 @@ class fireball:
         self.am = 2
         self.tx = 0
         self.ty = 0
-        self.sx = 200
-        self.sy = 200
-        self.alive = True
+        self.sx = rad
+        self.sy = rad
+        self.hp = 2
     def step(self, following):
-        if self.alive:
+        if self.hp > 0:
             self.angle += self.am/360
             
             radians = self.angle*self.what/3.14

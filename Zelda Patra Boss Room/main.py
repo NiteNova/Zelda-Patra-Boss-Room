@@ -1,6 +1,7 @@
 import pygame
 import boss
 import random
+import statues
 from sword import throw_sword
 pygame.init()  
 pygame.display.set_caption("Zelda Game")  # sets the window title
@@ -40,10 +41,10 @@ map = [[2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2],
        [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 ,2],
        [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 ,2 ,2]]
 
-#Link = pygame.image.load('link.png') #load your spritesheet
+
 metal = pygame.image.load('./metal.png') #load your spritesheet
 brick = pygame.image.load('./brick.png')
-#Link.set_colorkey((255, 0, 255)) #this makes bright pink (255, 0, 255) transparent (sort of)
+
 
 #start of player variables --------------------#
 xpos = 200 #xpos of player
@@ -56,7 +57,6 @@ keys = [False, False, False, False, False] #this list holds whether each key has
 isOnGround = False #this variable stops gravity from pulling you down more when on a platform
 movingx = False
 movingy = False
-potato = True
 #           animation variables variables
 frameWidth = 32
 frameHeight = 46
@@ -66,23 +66,35 @@ ticker = 0
 direction = DOWN
 #end of player variables ---------------------#
 
+#start of statue variables -------------------#
+stone_statues = [statues.enemy(350,500),statues.enemy(500,500)]
+stone_fire = [statues.enemy_fireball(350,500),statues.enemy_fireball(500,500)]
+
+#end of statue variables ---------------------#
+
 #start of patra variables --------------------#
 fire = []
 balls = 16
+generalradius = 120 # how far the fireballs will be from the tea- I mean patra
+gr = generalradius # saves the original radius
+inout = True
 for i in range(balls):
     j = i/balls-1/balls
-    fire.append(boss.fireball(boss_patra,j))
+    fire.append(boss.fireball(boss_patra,generalradius,j))
 firetimer = 0
 style = 16
 stylevarA = 1
 stylevarB = 0
 stylevarC = 0
+rate_limit = 0
 
+#end of patra variables--------------------------#
 
 while not gameover:
-    clock.tick(60) #FPS
+    delta = clock.tick(60)/1000 #FPS
     firetimer += 1/10
-   
+    
+
     for event in pygame.event.get(): #quit game if x is pressed in top corner
         if event.type == pygame.QUIT:
             gameover = True
@@ -155,7 +167,7 @@ while not gameover:
         if ypos > 400:
             vy = -3
         elif y_offset < 0:
-            y_offset+=3
+            y_offset+=6
             vy = 0
         else:
             vy = -3
@@ -170,13 +182,31 @@ while not gameover:
     
 
     #check space for shooting
-    if keys[SHOOT] == True and sword.isAlive == False:
-        
-        sword.shoot(xpos, ypos, direction)
+    if keys[SHOOT] == True:
+        if sword.isAlive == False and rate_limit <= 0:
+            rate_limit = 0.75
+            sword.shoot(xpos, ypos, direction)
+
+    rate_limit -= delta
     sword.move()
 
     if sword.xpos <= 50 or sword.xpos >= 800 or sword.ypos <= 50 or sword.ypos >= 850:
         sword.kill()
+    
+    #if enemy_fireball.xpos <= 50 or enemy_fireball.xpos >= 800 or enemy_fireball.ypos <= 50 or enemy_fireball.ypos >= 850:
+    #    enemy_fireball.dead()
+    if len(stone_statues) == len(stone_fire): #to avoid errors, it checks if the lists have the same length, since logically each statue would have it's own fireball
+        for p in range(len(stone_statues)):
+            stone_fire[p].movement(xpos, ypos)
+            if random.randint(0,100) == 0 and stone_fire[p].isAlive == False:
+                stone_fire[p].isAlive = True
+                stone_fire[p].xVel = xpos - stone_statues[p].xpos 
+                stone_fire[p].yVel = ypos - stone_statues[p].ypos 
+                stone_fire[p].xpos = stone_statues[p].xpos
+                stone_fire[p].ypos = stone_statues[p].ypos
+    else:
+        print("Statues won't work :(")
+
 
     xpos+=vx #update player xpos
     ypos+=vy #update player ypos
@@ -187,24 +217,19 @@ while not gameover:
     #down collision
     if map[int((ypos - y_offset + frameHeight - 5) / 50)][int((xpos - x_offset + frameWidth / 2) / 51)] == 2:
         ypos-=3
-   
+    
     #up collision
     if map[int((ypos - y_offset) / 50)][int((xpos - x_offset + frameWidth / 2) / 50)] == 2:
         ypos+=3
-       
+    
     #left collision
     if map[int((ypos - y_offset + frameHeight - 10) / 50)][int((xpos - x_offset - 5) / 50)] == 2 :
         xpos+=3
-       
+    
     #right collision
     if map[int((ypos - y_offset) / 50)][int((xpos - x_offset + frameWidth + 5) / 51)] == 2:
-        xpos-=3    
+        xpos-=3     
 
-    #stop moving if you hit edge of screen (will be removed for scrolling)
-    if xpos + frameWidth > 850:
-        xpos-=3
-    if xpos + frameHeight < 0:
-        xpos+=3
     #END PLAYER TO WALL COLLISION---------------------------------------------------------#
 
     #START OF BOSS MOVEMENT
@@ -216,212 +241,225 @@ while not gameover:
     if style != 16:
         boss_patra.step()
 
-    #START OF FIREBALL MOVEMENT------------------------------------------------------#
-    for i in range(len(fire)):
-        
+    #START OF FIREBALL MOVEMENT------------------------------------------------------#hihihihi
+    
+    if inout:
+        generalradius += 2
+        if generalradius > gr*1.5:
+            inout = False
+    else:
+        generalradius -= 2
+        if generalradius < gr*0.5:
+            inout = True
+    
+    for i, fireball in enumerate(fire):
         if style == 0: # Style 0: do nothing, become normal
             stylevarA = 0
             stylevarB = 0
-            fire[i].tx = 0
-            fire[i].ty = 0
-            fire[i].sx = 200
-            fire[i].sy = 200
-            fire[i].step(boss_patra)
+            fireball.tx = 0
+            fireball.ty = 0
+            fireball.sx = generalradius
+            fireball.sy = generalradius
+            fireball.step(boss_patra)
         elif style == 1: # Style 1: do the cool swaying
-            fire[i].tx = firetimer/2
+            fireball.tx = firetimer/2
             if stylevarA == 1:
-                fire[i].sy -= 1
-                if fire[i].sy <= -200:
+                fireball.sy -= 1
+                if fireball.sy <= 0-generalradius:
                     stylevarA = 2
             elif stylevarA == 2:
-                fire[i].sy += 1
-                if fire[i].sy >= 200:
+                fireball.sy += 1
+                if fireball.sy >= generalradius:
                     stylevarA = 0
                     stylevarB = 1
             if stylevarB == 1:
-                fire[i].sx -= 1
-                if fire[i].sx <= -200:
+                fireball.sx -= 1
+                if fireball.sx <= 0-generalradius:
                     stylevarB = 2
             elif stylevarB == 2:
-                fire[i].sx += 1
-                if fire[i].sx >= 200:
+                fireball.sx += 1
+                if fireball.sx >= generalradius:
                     stylevarA = 1
                     stylevarB = 0
-            fire[i].step(boss_patra)
+            fireball.step(boss_patra)
         elif style == 2: # Style 2: 3 orbiting 2
             if i % 4 == 0:
-                fire[i].step(boss_patra)
+                fireball.step(boss_patra)
+                fireball.sx = generalradius
+                fireball.sy = generalradius
                 stylevarB = i
             else:
-                fire[i].am = 3/(len(fire)//4)
-                fire[i].sx = 50
-                fire[i].sy = 50
-                fire[i].what = 25 * (len(fire)//4)
+                fireball.am = 3/(len(fire)//4)
+                fireball.sx = generalradius/4
+                fireball.sy = generalradius/4
+                fireball.what = 25 * (len(fire)//4)
                     
-                fire[i].step(fire[int(stylevarB)])
+                fireball.step(fire[int(stylevarB)])
         elif style == 3: # Style 3: Mario Firebar
             if stylevarB < len(fire):
                 stylevarB += 1
-                fire[i].angle = 0
-                fire[i].sx = 20*i+20
-                fire[i].sy = 20*i+20
-            fire[i].step(boss_patra)
+                fireball.angle = 0
+                fireball.sx = (generalradius/5)*i+20
+                fireball.sy = (generalradius/5)*i+20
+            fireball.step(boss_patra)
         elif style == 4: # Style 4: The Cooler Mario Firebar
             if stylevarB < len(fire):
                 stylevarB += 1
-                fire[i].angle = 0
-                fire[i].what = firetimer*i*10-20
-                fire[i].sx = 20*i+20
-                fire[i].sy = 20*i+20
-            fire[i].step(boss_patra)
+                fireball.angle = 0
+                fireball.what = firetimer*i*10-20
+                fireball.sx = (generalradius/5)*i+20
+                fireball.sy = (generalradius/5)*i+20
+            fireball.step(boss_patra)
         elif style == 5: #Style 5: Wings
             if stylevarB < len(fire):
                 stylevarB += 1
                 if i % 2 == 1:
-                    fire[i].angle = 1/2
-                    fire[i].am = 1
-                    fire[i].what = (firetimer)*(i//2)*10-20
+                    fireball.angle = 1/2
+                    fireball.am = 1
+                    fireball.what = (firetimer)*(i//2)*10-20
                 else:
-                    fire[i].angle = 0
-                    fire[i].am = -1
-                    fire[i].what = (0-firetimer)*(i//2)*10+20
-                fire[i].sx = (i//2)*30+30
-                fire[i].sy = (i//2)*30+30
-            fire[i].step(boss_patra)
+                    fireball.angle = 0
+                    fireball.am = -1
+                    fireball.what = (0-firetimer)*(i//2)*10+20
+                fireball.sx = (i//2)*30+30
+                fireball.sy = (i//2)*30+30
+            fireball.step(boss_patra)
         elif style == 6: # Style 6: Cool Swirl (Accident)
             if stylevarB < len(fire):
                 if stylevarB < len(fire)/2:
                     stylevarB += 1
-                    fire[i].sx = len(fire)*10-(i*20)
-                    fire[i].sy = i*20
+                    fireball.sx = len(fire)*10-(i*20)
+                    fireball.sy = i*20
                 else:
-                    fire[i].sx = i*20
-                    fire[i].sy = len(fire)*10-(i*20)
-            fire[i].step(boss_patra)
+                    fireball.sx = i*20
+                    fireball.sy = len(fire)*10-(i*20)
+            fireball.step(boss_patra)
         elif style == 7: # Style 7: Some other cool swirls (Also an Accident)
             if stylevarB < len(fire):
-                fire[i].am = 2
+                fireball.am = 2
                 stylevarB += 1
                 if stylevarB < len(fire)/2:
                     if i % 2 == 1:
-                        fire[i].sy = i*20
+                        fireball.sy = i*20
                     else:
-                        fire[i].sy = i*-20
+                        fireball.sy = i*-20
                 else:
-                    fire[i].sy = fire[len(fire)-i].sy
-            fire[i].step(boss_patra)
+                    fireball.sy = fire[len(fire)-i].sy
+            fireball.step(boss_patra)
         elif style == 8: # Style 8: Have half of the balls orbit counterclock wise
+            fireball.sx = generalradius
+            fireball.sy = generalradius
             if stylevarB < len(fire):
                 stylevarB += 1
                 if i % 2 == 1:
-                    fire[i].am = 0-fire[i].am
-            fire[i].step(boss_patra)
+                    fireball.am = 0-fireball.am
+            fireball.step(boss_patra)
         elif style == 9: # Style 9: Revolving Horizontally
             if stylevarB < len(fire):
                 stylevarB += 1
                 if i % 2 == 1:
-                    fire[i].sx = -100
+                    fireball.sx = 0-generalradius
             else:
-                fire[i].tx = firetimer/2
+                fireball.tx = firetimer/2
                 if stylevarA == 1:
                     if i % 2 == 1:
-                        fire[i].sx -= 1
+                        fireball.sx -= 1
                     else:
-                        fire[i].sx += 1
-                        if fire[i].sx <= -200:
+                        fireball.sx += 1
+                        if fireball.sx <= 0-generalradius:
                             stylevarA = 2
                 elif stylevarA == 2:
                     if i % 2 == 1:
-                        fire[i].sx += 1
+                        fireball.sx += 1
                         
                     else:
-                        fire[i].sx -= 1
-                        if fire[i].sx >= 100:
+                        fireball.sx -= 1
+                        if fireball.sx >= generalradius:
                             stylevarA = 1
-            fire[i].step(boss_patra)
+            fireball.step(boss_patra)
         elif style == 10: # Style 10: Revolving Vertically
             if stylevarB < len(fire):
                 stylevarB += 1
                 if i % 2 == 1:
-                    fire[i].sy = -100
+                    fireball.sy = 0-generalradius
             else:
-                fire[i].tx = firetimer/2
+                fireball.tx = firetimer/2
                 if stylevarA == 1:
                     if i % 2 == 1:
-                        fire[i].sy -= 1
+                        fireball.sy -= 1
                         
                     else:
-                        fire[i].sy += 1
-                        if fire[i].sy >= 200:
+                        fireball.sy += 1
+                        if fireball.sy >= generalradius:
                             stylevarA = 2
                 elif stylevarA == 2:
                     if i % 2 == 1:
-                        fire[i].sy += 1
+                        fireball.sy += 1
                         
                     else:
-                        fire[i].sy -= 1
-                        if fire[i].sy <= -200:
+                        fireball.sy -= 1
+                        if fireball.sy <= 0-generalradius:
                             stylevarA = 1
         elif style == 11: # Style 11: In and Out
-            if fire[i].sx > 0:
+            if fireball.sx > 0:
                 stylevarB -= 0.01
             else:
                 stylevarB += 0.01
-            fire[i].sx += stylevarB
-            fire[i].sy += stylevarB
-            if fire[i].sx > 250:
-                fire[i].sx = 250
-                fire[i].sy = 250
+            fireball.sx += stylevarB
+            fireball.sy += stylevarB
+            if fireball.sx > gr+50:
+                fireball.sx = gr+50
+                fireball.sy = gr+50
                 stylevarB = 0
-            elif fire[i].sx < -250:
-                fire[i].sx = -250
-                fire[i].sy = -250
+            elif fireball.sx < 0-(gr+50):
+                fireball.sx = 0-(gr+50)
+                fireball.sy = 0-(gr+50)
                 stylevarB = 0
-            fire[i].step(boss_patra)
+            fireball.step(boss_patra)
         elif style == 12: # Style 12: E G G
-            if fire[i].y < boss_patra.y:
-                fire[i].sy = 250
+            if fireball.y < boss_patra.y:
+                fireball.sy = generalradius*1.25
             else:
-                fire[i].sy = 175
-            fire[i].step(boss_patra)
+                fireball.sy = generalradius*0.75
+            fireball.sx = generalradius
+            fireball.step(boss_patra)
         elif style == 13: # Style 13: Crumbling
-            if fire[i].am < 0:
-                fire[i].am += 0.01
+            if fireball.am < 0:
+                fireball.am += 0.01
             else:
-                fire[i].am -= 0.01
-            fire[i].sx += random.randint(-3,1)
-            fire[i].sy += random.randint(-3,1)
-            fire[i].step(boss_patra)
-            if fire[i].am < 0.1 and fire[i].am > -0.1:
+                fireball.am -= 0.01
+            fireball.sx += random.randint(-3,1)
+            fireball.sy += random.randint(-3,1)
+            fireball.step(boss_patra)
+            if fireball.am < 0.1 and fireball.am > -0.1:
                 style = 14
         elif style == 14: # Style 14: Blowing up
-            fire[i].sx += 5
-            fire[i].sy += 5
-            if abs(fire[i].x+500) > 700 or abs(fire[i].y+500) > 700:
-                fire[i].alive = False
-            fire[i].step(boss_patra)
+            fireball.sx += 5
+            fireball.sy += 5
+            if abs(fireball.x+500) > 700 or abs(fireball.y+500) > 700:
+                fireball.alive = False
+            fireball.step(boss_patra)
         elif style == 15: # Style 15: Pengilum or whatever it is
-            fire[i].am = 0
-            fire[i].what = firetimer
-            fire[i].step(boss_patra)
+            fireball.am = 0
+            fireball.what = firetimer
+            fireball.step(boss_patra)
         elif style == 16: # Style 16: Preparing!
+            generalradius = gr
             if firetimer >= 0 and stylevarA == 1:
                 firetimer = 0
                 stylevarA = 0
-            fire[i].am = 0
-            fire[i].what = firetimer
-            fire[i].step(boss_patra)
+            fireball.am = 0
+            fireball.what = firetimer
+            fireball.step(boss_patra)
             if firetimer >= 20:
                 for j in range(len(fire)):
                     fire[j].am = 2
                     fire[j].what = 20
-                style = 1
+                style = random.randint(0,12)
                 firetimer = 0
                 stylevarA = 1
     #END OF FIREBALL MOVEMENT--------------------------------------------------------#
 
-
-    #START OF ANIMATION-------------------------------------------------------------------#
 
     #START OF RENDER------------------------------------------------------------------#       
     screen.fill((0,0,0)) #wipe screen so it doesn't smear
@@ -440,9 +478,12 @@ while not gameover:
     pygame.draw.rect(screen, (255, 255, 255), (xpos, ypos, 20, 40))
 
     #draw enemy and fireballs
+    for o in range(len(stone_statues)):
+        stone_statues[o].draw(screen)
+        stone_fire[o].draw(screen)
     boss_patra.draw(screen)
-    for i in range (len(fire)):
-        fire[i].draw(screen)
+    for fireball in fire:
+        fireball.draw(screen)
 
 
     pygame.display.flip()#this actually puts the pixel on the screen
