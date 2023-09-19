@@ -31,12 +31,6 @@ class throw_sword:
     def draw(self, screen):
         pygame.draw.circle(screen, (250, 0, 0), (self.xpos, self.ypos), 10)
         pygame.draw.circle(screen, (250, 250, 0), (self.xpos, self.ypos), 5)
-    def collide(self, x, y):
-        if math.sqrt((self.xpos - x) ** 2 + (self.ypos - y) ** 2) < 25: #25 is radius of fireball + radius of potato
-            print("collision!")
-            return True
-        else:
-            return False
     def kill(self):
         self.isAlive = False    
     

@@ -13,10 +13,10 @@ class enemy:
 class enemy_fireball:
     def __init__ (self, xpos, ypos):
         self.isAlive = False
-        self.xVel = 0
-        self.yVel = 0
-        self.xpos = xpos
-        self.ypos = ypos
+        self.xVel: float = 0
+        self.yVel: float = 0
+        self.xpos: float = xpos
+        self.ypos: float = ypos
 
     def draw(self, screen):
         if self.isAlive == True:
@@ -31,6 +31,7 @@ class enemy_fireball:
     def collide(self, p_xpos, p_ypos):
         if self.isAlive == True and self.xpos == p_xpos and self.ypos == p_ypos:
             return -1
+            
 
     def dead(self):
         self.isAlive = False
