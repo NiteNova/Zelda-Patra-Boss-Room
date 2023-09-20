@@ -18,6 +18,7 @@ UP = 2
 DOWN = 3
 SHOOT = 4
 
+statue = pygame.image.load("statue.png")
 sword = throw_sword()
 boss_patra = boss.patra(425, 450)
 bossalive = True
@@ -52,8 +53,6 @@ xpos = 200 #xpos of player
 ypos = 200 #ypos of player
 vx = 0 #x velocity of player
 vy = 0 #y velocity of player
-x_offset = 0
-y_offset = 0
 keys = [False, False, False, False, False] #this list holds whether each key has been pressed
 isOnGround = False #this variable stops gravity from pulling you down more when on a platform
 movingx = False
@@ -125,25 +124,13 @@ while not gameover:
          
     #LEFT MOVEMENT
     if keys[LEFT] == True:
-        if xpos > 400:
-            vx = -3
-        elif x_offset < 0:
-            x_offset+=3
-            vx = 0
-        else:
-            vx = -3
+        vx = -3
         RowNum = 0
         direction = LEFT
         movingx = True
     #RIGHT MOVEMENT
     elif keys[RIGHT] == True:
-        if xpos < 400:
-            vx = 3
-        elif x_offset > 800:
-            x_offset-=3
-            vx = 0
-        else:
-            vx = 3
+        vx = 3
         RowNum = 1
         direction = RIGHT
         movingx = True
@@ -152,26 +139,14 @@ while not gameover:
         movingx = False
     #DOWN MOVEMENT
     if keys[DOWN] == True:
-        if ypos < 400:
-            vy = 3
-        elif y_offset > 800:
-            y_offset-=3
-            vy = 0
-        else:
-            vy = 3
+        vy = 3
         RowNum = 1
         RowNum = 3
         direction = DOWN
         movingy = True
     #UP MOVEMENT
     elif keys[UP] == True:
-        if ypos > 400:
-            vy = -3
-        elif y_offset < 0:
-            y_offset+=6
-            vy = 0
-        else:
-            vy = -3
+        vy = -3
         RowNum = 0
         RowNum = 2
         direction = UP
@@ -220,19 +195,19 @@ while not gameover:
     #START PLAYER TO WALL COLLISION---------------------------------------------------------#
    
     #down collision
-    if map[int((ypos - y_offset + frameHeight - 5) / 50)][int((xpos - x_offset + frameWidth / 2) / 51)] == 2:
+    if map[int((ypos - frameHeight - 5) / 50)][int((xpos - frameWidth / 2) / 51)] == 2:
         ypos-=3
     
     #up collision
-    if map[int((ypos - y_offset) / 50)][int((xpos - x_offset + frameWidth / 2) / 50)] == 2:
+    if map[int((ypos) / 50)][int((xpos - frameWidth / 2) / 50)] == 2:
         ypos+=3
     
     #left collision
-    if map[int((ypos - y_offset + frameHeight - 10) / 50)][int((xpos - x_offset - 5) / 50)] == 2 :
+    if map[int((ypos - frameHeight - 10) / 50)][int((xpos - 5) / 50)] == 2 :
         xpos+=3
     
     #right collision
-    if map[int((ypos - y_offset) / 50)][int((xpos - x_offset + frameWidth + 5) / 51)] == 2:
+    if map[int((ypos) / 50)][int((xpos - frameWidth + 5) / 51)] == 2:
         xpos-=3     
 
     #END PLAYER TO WALL COLLISION---------------------------------------------------------#
@@ -266,7 +241,6 @@ while not gameover:
     firetimer = Zed[5]
     #END OF FIREBALL MOVEMENT--------------------------------------------------------#
 
-
     #START OF RENDER------------------------------------------------------------------#       
     screen.fill((0,0,0)) #wipe screen so it doesn't smear
    
@@ -274,9 +248,9 @@ while not gameover:
     for i in range(18):
         for j in range(17):
             if map[i][j] == 1:
-                screen.blit(brick, (j * 50 + x_offset, i * 50 + y_offset), (0, 0, 50, 50))
+                screen.blit(brick, (j * 50, i * 50), (0, 0, 50, 50))
             if map[i][j] == 2:
-                screen.blit(metal, (j * 50 + x_offset, i * 50 + y_offset), (0, 0, 50, 50))
+                screen.blit(metal, (j * 50, i * 50), (0, 0, 50, 50))
     #draw fireball
     if sword.isAlive == True:
         sword.draw(screen)
