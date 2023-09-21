@@ -196,19 +196,19 @@ while not gameover:
    
     #down collision
     if map[int((ypos - frameHeight - 5) / 50)][int((xpos - frameWidth / 2) / 51)] == 2:
-        ypos-=3
+        ypos-=6
     
     #up collision
     if map[int((ypos) / 50)][int((xpos - frameWidth / 2) / 50)] == 2:
-        ypos+=3
+        ypos+=6
     
     #left collision
     if map[int((ypos - frameHeight - 10) / 50)][int((xpos - 5) / 50)] == 2 :
-        xpos+=3
+        xpos+=6
     
     #right collision
-    if map[int((ypos) / 50)][int((xpos - frameWidth + 5) / 51)] == 2:
-        xpos-=3     
+    if map[int((ypos) / 50)][int((xpos - frameWidth + 5) / 50)] == 2:
+        xpos-=6     
 
     #END PLAYER TO WALL COLLISION---------------------------------------------------------#
 
