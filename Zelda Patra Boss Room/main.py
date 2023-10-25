@@ -18,9 +18,8 @@ UP = 2
 DOWN = 3
 SHOOT = 4
 
-statue = pygame.image.load("statue.png")
 sword = throw_sword()
-boss_patra = boss.patra(425, 450)
+boss_patra = boss.patra(380, 420)
 bossalive = True
 
 #MAP: 1 is grass, 2 is brick
@@ -49,6 +48,7 @@ brick = pygame.image.load('./brick.png')
 
 
 #start of player variables --------------------#
+player_hp = 5
 xpos = 200 #xpos of player
 ypos = 200 #ypos of player
 vx = 0 #x velocity of player
@@ -67,8 +67,8 @@ direction = DOWN
 #end of player variables ---------------------#
 
 #start of statue variables -------------------#
-stone_statues = [statues.enemy(350,500),statues.enemy(500,500)]
-stone_fire = [statues.enemy_fireball(350,500),statues.enemy_fireball(500,500)]
+stone_statues = [statues.enemy(340, 450),statues.enemy(470, 450)]
+stone_fire = [statues.enemy_fireball(340, 450),statues.enemy_fireball(470, 450)]
 
 #end of statue variables ---------------------#
 
@@ -124,13 +124,13 @@ while not gameover:
          
     #LEFT MOVEMENT
     if keys[LEFT] == True:
-        vx = -3
+        vx = -8
         RowNum = 0
         direction = LEFT
         movingx = True
     #RIGHT MOVEMENT
     elif keys[RIGHT] == True:
-        vx = 3
+        vx = 8
         RowNum = 1
         direction = RIGHT
         movingx = True
@@ -139,14 +139,14 @@ while not gameover:
         movingx = False
     #DOWN MOVEMENT
     if keys[DOWN] == True:
-        vy = 3
+        vy = 8
         RowNum = 1
         RowNum = 3
         direction = DOWN
         movingy = True
     #UP MOVEMENT
     elif keys[UP] == True:
-        vy = -3
+        vy = -8
         RowNum = 0
         RowNum = 2
         direction = UP
@@ -178,8 +178,11 @@ while not gameover:
     if len(stone_statues) == len(stone_fire): #to avoid errors, it checks if the lists have the same length, since logically each statue would have it's own fireball
         for p in range(len(stone_statues)):
             stone_fire[p].movement(xpos, ypos)
-            if stone_fire[p].xpos <= 50 or stone_fire[p].xpos >= 800 or stone_fire[p].ypos <= 50 or stone_fire[p].ypos >= 850:
+            if stone_fire[p].xpos <= 60 or stone_fire[p].xpos >= 800 or stone_fire[p].ypos <= 50 or stone_fire[p].ypos >= 850:
                 stone_fire[p].dead()
+            if stone_fire[p].xpos <= xpos+20 and stone_fire[p].xpos >= xpos and stone_fire[p].ypos >= ypos and stone_fire[p].ypos <= ypos+40 and stone_fire[p].isAlive == True:
+                stone_fire[p].dead()
+                player_hp += stone_fire[p].collide()
             if random.randint(0,100) == 0 and stone_fire[p].isAlive == False:
                 stone_fire[p].isAlive = True
                 stone_fire[p].xpos = stone_statues[p].xpos
@@ -193,22 +196,15 @@ while not gameover:
     #END OF STATUE AND ITS FIREBALL MOVEMENT------------------------------------------------#
    
     #START PLAYER TO WALL COLLISION---------------------------------------------------------#
-   
-    #down collision
-    if map[int((ypos - frameHeight - 5) / 50)][int((xpos - frameWidth / 2) / 51)] == 2:
-        ypos-=6
-    
-    #up collision
-    if map[int((ypos) / 50)][int((xpos - frameWidth / 2) / 50)] == 2:
-        ypos+=6
-    
-    #left collision
-    if map[int((ypos - frameHeight - 10) / 50)][int((xpos - 5) / 50)] == 2 :
-        xpos+=6
-    
-    #right collision
-    if map[int((ypos) / 50)][int((xpos - frameWidth + 5) / 50)] == 2:
-        xpos-=6     
+    #850 900
+    if xpos <= 50:
+        xpos = 50
+    if xpos >= 780:
+        xpos = 780
+    if ypos <= 50:
+        ypos = 50
+    if ypos >= 810:
+        ypos = 810
 
     #END PLAYER TO WALL COLLISION---------------------------------------------------------#
 
@@ -247,9 +243,9 @@ while not gameover:
     #draw map
     for i in range(18):
         for j in range(17):
-            if map[i][j] == 1:
-                screen.blit(brick, (j * 50, i * 50), (0, 0, 50, 50))
             if map[i][j] == 2:
+                screen.blit(brick, (j * 50, i * 50), (0, 0, 50, 50))
+            if map[i][j] == 0:
                 screen.blit(metal, (j * 50, i * 50), (0, 0, 50, 50))
     #draw fireball
     if sword.isAlive == True:
@@ -259,18 +255,13 @@ while not gameover:
 
     #draw enemy and fireballs
     for o in range(len(stone_statues)):
-        stone_statues[o].draw(screen)
+        stone_statues[o].draw(screen, o)
         stone_fire[o].draw(screen)
     boss_patra.draw(screen)
     for fireball in fire:
         fireball.draw(screen)
 
-    my_font = pygame.font.SysFont('Comic Sans MS', 30)
-    text_surface = my_font.render('LIVES:', False, (255, 0, 0))
 
-   
-
-    screen.blit(text_surface, (0,0))
 
     pygame.display.flip()#this actually puts the pixel on the screen
     

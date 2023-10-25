@@ -2,13 +2,20 @@ import pygame
 import random
 import math
 
+
+statue = pygame.image.load("statue.png")
+statue2 = pygame.image.load("statue2.png")
+
 class enemy:
     def __init__(self, xpos, ypos):
         self.xpos = xpos
         self.ypos = ypos
         
-    def draw(self, screen):
-        pygame.draw.rect(screen, (250, 0, 50), (self.xpos, self.ypos, 40, 40))
+    def draw(self, screen, style):
+        if style == 0:
+            screen.blit(statue2, (self.xpos, self.ypos))
+        elif style == 1:
+            screen.blit(statue, (self.xpos, self.ypos))
 
 class enemy_fireball:
     def __init__ (self, xpos, ypos):
@@ -27,12 +34,10 @@ class enemy_fireball:
         self.xpos += self.xVel
         self.ypos += self.yVel
 
-
-    def collide(self, p_xpos, p_ypos):
-        if self.isAlive == True and self.xpos == p_xpos and self.ypos == p_ypos:
-            return -1
-            
-
+    def collide(self):
+        print("hit")
+        return -1
+    
     def dead(self):
         self.isAlive = False
         self.xVel = 0
